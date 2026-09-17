@@ -1,4 +1,12 @@
 import { useState } from "react";
+import { registerEmployee } from "../services/employeeService";
+import {
+    validateName,
+    validateAge,
+    validateDesignation,
+    validateGender,
+    validatePassword
+} from "../validations/registerValidation";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/Register.css";
@@ -22,60 +30,6 @@ function Register() {
         message: "",
         type: "info"
     });
-
-    const validateName = (value) => {
-        if (!value.trim()) {
-            return "Name is required";
-        }
-
-        if (!/^[A-Za-z ]+$/.test(value)) {
-            return "Name should contain only letters and spaces";
-        }
-
-        return "";
-    };
-
-    const validateAge = (value) => {
-        if (!value) {
-            return "Age is required";
-        }
-
-        if (!/^\d+$/.test(value)) {
-            return "Age should contain only numbers";
-        }
-
-        const numericAge = Number(value);
-
-        if (numericAge < 18 || numericAge > 60) {
-            return "Age must be between 18 and 60";
-        }
-
-        return "";
-    };
-
-    const validateDesignation = (value) => {
-        if (!value) {
-            return "Please select a designation";
-        }
-
-        return "";
-    };
-
-    const validateGender = (value) => {
-        if (!value) {
-            return "Please select a gender";
-        }
-
-        return "";
-    };
-
-    const validatePassword = (value) => {
-        if (!value) {
-            return "Password is required";
-        }
-
-        return "";
-    };
 
     const handleNameChange = (event) => {
         const value = event.target.value;
@@ -151,32 +105,16 @@ function Register() {
         };
 
         try {
-            const response = await fetch("/api/v1/employees/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(employee)
+            await registerEmployee(employee);
+
+            setToast({
+                message: "Registration successful!",
+                type: "success"
             });
 
-            if (response.ok) {
-                setToast({
-                    message: "Registration successful!",
-                    type: "success"
-                });
-
-                setTimeout(() => {
-                    navigate("/");
-                }, 500);
-
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Registration failed",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                navigate("/");
+            }, 500);
 
         } catch (error) {
             console.error(error);

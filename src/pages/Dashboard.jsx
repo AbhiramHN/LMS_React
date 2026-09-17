@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { getCurrentEmployee, logout } from "../services/authService";
+import { generateReport } from "../services/reportService";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/Dashboard.css";
@@ -19,29 +21,19 @@ function Dashboard() {
 
     const loadDashboard = async () => {
         try {
-            const response = await fetch("/api/v1/auth/me");
-
-            if (response.status === 401) {
-                navigate("/");
-                return;
-            }
-
-            if (!response.ok) {
-                setToast({
-                    message: "Unable to load user information.",
-                    type: "error"
-                });
-                return;
-            }
-
-            const employeeData = await response.json();
+            const employeeData = await getCurrentEmployee();
             setEmployee(employeeData);
 
         } catch (error) {
             console.error(error);
 
+            if (error.message === "UNAUTHORIZED") {
+                navigate("/");
+                return;
+            }
+
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to load user information.",
                 type: "error"
             });
         }
@@ -49,14 +41,22 @@ function Dashboard() {
 
     const handleGenerateReport = async () => {
         try {
-            const response = await fetch("/api/v1/generateReport");
+            await generateReport();
 
-            if (response.status === 401) {
+            setToast({
+                message: "Report generation started.",
+                type: "success"
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            if (error.message === "UNAUTHORIZED") {
                 navigate("/");
                 return;
             }
 
-            if (response.status === 403) {
+            if (error.message === "NOT_AUTHORIZED") {
                 setToast({
                     message: "Not Authorized.",
                     type: "error"
@@ -64,25 +64,8 @@ function Dashboard() {
                 return;
             }
 
-            if (response.ok) {
-                setToast({
-                    message: "Report generation started.",
-                    type: "success"
-                });
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to generate report.",
-                    type: "error"
-                });
-            }
-
-        } catch (error) {
-            console.error(error);
-
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to generate report.",
                 type: "error"
             });
         }
@@ -90,32 +73,22 @@ function Dashboard() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("/api/v1/auth/logout", {
-                method: "POST"
+            await logout();
+
+            setToast({
+                message: "Logout successful!",
+                type: "success"
             });
 
-            if (response.ok) {
-                setToast({
-                    message: "Logout successful!",
-                    type: "success"
-                });
-
-                setTimeout(() => {
-                    navigate("/");
-                }, 500);
-
-            } else {
-                setToast({
-                    message: "Unable to logout.",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                navigate("/");
+            }, 500);
 
         } catch (error) {
             console.error(error);
 
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to logout.",
                 type: "error"
             });
         }

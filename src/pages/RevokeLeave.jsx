@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/RevokeLeave.css";
+import { getRevocableLeaves, revokeLeave } from "../services/leaveService";
 
 function RevokeLeave() {
     const navigate = useNavigate();
@@ -19,14 +20,18 @@ function RevokeLeave() {
 
     const loadRevocableLeaves = async () => {
         try {
-            const response = await fetch("/api/v1/leave/revocable");
+            const leaveData = await getRevocableLeaves();
+            setLeaves(leaveData);
 
-            if (response.status === 401) {
+        } catch (error) {
+            console.error(error);
+
+            if (error.message === "UNAUTHORIZED") {
                 navigate("/");
                 return;
             }
 
-            if (response.status === 403) {
+            if (error.message === "NOT_AUTHORIZED") {
                 setToast({
                     message: "Only Leads and Managers can revoke leaves.",
                     type: "error"
@@ -39,68 +44,36 @@ function RevokeLeave() {
                 return;
             }
 
-            if (!response.ok) {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to load revocable leaves.",
-                    type: "error"
-                });
-
-                return;
-            }
-
-            const leaveData = await response.json();
-            setLeaves(leaveData);
-
-        } catch (error) {
-            console.error(error);
-
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to load revocable leaves.",
                 type: "error"
             });
         }
     };
 
-    const revokeLeave = async (leaveId) => {
+    const handleRevokeLeave = async (leaveId) => {
         try {
-            const response = await fetch(
-                `/api/v1/leave/${leaveId}/revoke`,
-                {
-                    method: "PUT"
-                }
-            );
+            await revokeLeave(leaveId);
 
-            if (response.status === 401) {
-                navigate("/");
-                return;
-            }
+            setToast({
+                message: "Leave revoked successfully.",
+                type: "success"
+            });
 
-            if (response.ok) {
-                setToast({
-                    message: "Leave revoked successfully.",
-                    type: "success"
-                });
-
-                setTimeout(() => {
-                    loadRevocableLeaves();
-                }, 500);
-
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to revoke leave.",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                loadRevocableLeaves();
+            }, 500);
 
         } catch (error) {
             console.error(error);
 
+            if (error.message === "UNAUTHORIZED") {
+                navigate("/");
+                return;
+            }
+
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to revoke leave.",
                 type: "error"
             });
         }
@@ -190,11 +163,7 @@ function RevokeLeave() {
                                             <td>
                                                 <button
                                                     className="revoke-button"
-                                                    onClick={() =>
-                                                        revokeLeave(
-                                                            leave.leaveId
-                                                        )
-                                                    }
+                                                    onClick={() => handleRevokeLeave(leave.leaveId)}
                                                 >
                                                     Revoke
                                                 </button>

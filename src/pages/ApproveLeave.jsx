@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/ApproveLeave.css";
+import { getPendingLeaves, processLeave } from "../services/leaveService";
 
 function ApproveLeave() {
     const navigate = useNavigate();
@@ -19,14 +20,18 @@ function ApproveLeave() {
 
     const loadPendingLeaves = async () => {
         try {
-            const response = await fetch("/api/v1/leave/pending");
+            const leaveData = await getPendingLeaves();
+            setLeaves(leaveData);
 
-            if (response.status === 401) {
+        } catch (error) {
+            console.error(error);
+
+            if (error.message === "UNAUTHORIZED") {
                 navigate("/");
                 return;
             }
 
-            if (response.status === 403) {
+            if (error.message === "NOT_AUTHORIZED") {
                 setToast({
                     message: "Only Leads and Managers can view pending leaves.",
                     type: "error"
@@ -39,80 +44,50 @@ function ApproveLeave() {
                 return;
             }
 
-            if (!response.ok) {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to load pending leaves.",
-                    type: "error"
-                });
-
-                return;
-            }
-
-            const leaveData = await response.json();
-            setLeaves(leaveData);
-
-        } catch (error) {
-            console.error(error);
-
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to load pending leaves.",
                 type: "error"
             });
         }
     };
 
-    const processLeave = async (leaveId, action) => {
+    const handleProcessLeave = async (leaveId, action) => {
         try {
-            const response = await fetch(`/api/v1/leave/${leaveId}/${action}`,
-                {
-                    method: "PUT"
-                }
-            );
+            await processLeave(leaveId, action);
 
-            if (response.ok) {
-                setToast({
-                    message:
-                        action === "approve"
-                            ? "Leave approved successfully."
-                            : "Leave rejected successfully.",
-                    type: "success"
-                });
+            setToast({
+                message:
+                    action === "approve"
+                        ? "Leave approved successfully."
+                        : "Leave rejected successfully.",
+                type: "success"
+            });
 
-                setTimeout(() => {
-                    loadPendingLeaves();
-                }, 500);
-
-            } else if (response.status === 401) {
-                navigate("/");
-
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message:
-                        error || "Unable to process leave request.",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                loadPendingLeaves();
+            }, 500);
 
         } catch (error) {
             console.error(error);
 
+            if (error.message === "UNAUTHORIZED") {
+                navigate("/");
+                return;
+            }
+
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to process leave request.",
                 type: "error"
             });
         }
     };
 
     const approveLeave = (leaveId) => {
-        processLeave(leaveId, "approve");
+        handleProcessLeave(leaveId, "approve");
     };
 
     const rejectLeave = (leaveId) => {
-        processLeave(leaveId, "reject");
+        handleProcessLeave(leaveId, "reject");
     };
 
     return (

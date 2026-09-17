@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getLeaveHistory } from "../services/leaveService";
 import Toast from "../components/Toast";
 import "../css/LeaveHistory.css";
 
@@ -19,32 +20,19 @@ function LeaveHistory() {
 
     const loadLeaveHistory = async () => {
         try {
-            const response = await fetch("/api/v1/leave/history");
-
-            if (response.status === 401) {
-                navigate("/");
-                return;
-            }
-
-            if (!response.ok) {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to load leave history.",
-                    type: "error"
-                });
-
-                return;
-            }
-
-            const leaveData = await response.json();
+            const leaveData = await getLeaveHistory();
             setLeaves(leaveData);
 
         } catch (error) {
             console.error(error);
 
+            if (error.message === "UNAUTHORIZED") {
+                navigate("/");
+                return;
+            }
+
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to load leave history.",
                 type: "error"
             });
         }

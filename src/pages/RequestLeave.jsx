@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/RequestLeave.css";
+import { applyLeave } from "../services/leaveService";
 
 function RequestLeave() {
     const navigate = useNavigate();
@@ -27,37 +28,27 @@ function RequestLeave() {
         };
 
         try {
-            const response = await fetch("/api/v1/leave/apply", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(leaveRequest)
+            await applyLeave(leaveRequest);
+
+            setToast({
+                message: "Leave request submitted successfully.",
+                type: "success"
             });
 
-            if (response.ok) {
-                setToast({
-                    message: "Leave request submitted successfully.",
-                    type: "success"
-                });
-
-                setTimeout(() => {
-                    navigate("/dashboard");
-                }, 500);
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Unable to submit leave request.",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 500);
 
         } catch (error) {
             console.error(error);
 
+            if (error.message === "UNAUTHORIZED") {
+                navigate("/");
+                return;
+            }
+
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to submit leave request.",
                 type: "error"
             });
         }

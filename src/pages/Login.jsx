@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
+import { login } from "../services/authService";
 import "../css/Login.css";
 
 function Login() {
@@ -17,44 +18,23 @@ function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const loginData = {
-            employeeId,
-            password
-        };
-
         try {
-            const response = await fetch("/api/v1/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(loginData)
+            await login(employeeId, password);
+
+            setToast({
+                message: "Login successful!",
+                type: "success"
             });
 
-            if (response.ok) {
-                setToast({
-                    message: "Login successful!",
-                    type: "success"
-                });
-
-                setTimeout(() => {
-                    navigate("/dashboard");
-                }, 500);
-
-            } else {
-                const error = await response.text();
-
-                setToast({
-                    message: error || "Invalid employee ID or password.",
-                    type: "error"
-                });
-            }
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 500);
 
         } catch (error) {
             console.error(error);
 
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Unable to connect to the server.",
                 type: "error"
             });
         }
