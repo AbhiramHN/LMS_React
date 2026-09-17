@@ -31,7 +31,7 @@ export async function getCurrentEmployee() {
         return response.json();
     }
 
-    if (response.status === 401) {
+    if (response.status === HTTP_STATUS.UNAUTHORIZED) {
         throw new Error("UNAUTHORIZED");
     }
 
