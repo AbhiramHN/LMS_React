@@ -7,6 +7,7 @@ import LeaveHistory from "./pages/LeaveHistory";
 import ApproveLeave from "./pages/ApproveLeave";
 import RevokeLeave from "./pages/RevokeLeave";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
     return (
@@ -14,11 +15,46 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/request-leave" element={<RequestLeave />} />
-                <Route path="/leave-history" element={<LeaveHistory />} />
-                <Route path="/approve-leave" element={<ApproveLeave />} />
-                <Route path="/revoke-leave" element={<RevokeLeave />} />
+
+                <Route path="/dashboard" 
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/request-leave"
+                    element={
+                        <ProtectedRoute>
+                            <RequestLeave />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/leave-history"
+                    element={
+                        <ProtectedRoute>
+                            <LeaveHistory />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/approve-leave"
+                    element={
+                        <ProtectedRoute>
+                            <ApproveLeave />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/revoke-leave"
+                    element={
+                        <ProtectedRoute>
+                            <RevokeLeave />
+                        </ProtectedRoute>
+                    }
+                />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

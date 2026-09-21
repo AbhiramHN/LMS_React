@@ -1,5 +1,9 @@
+import { HTTP_STATUS } from "../constants/httpStatus";
+
 export async function generateReport() {
-    const response = await fetch("/api/v1/generateReport");
+    const response = await fetch("/api/v1/generateReport", {
+        credentials: "include"
+    });
 
     if (response.ok) {
         return;

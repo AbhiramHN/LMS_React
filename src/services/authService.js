@@ -1,4 +1,4 @@
-
+import { HTTP_STATUS } from "../constants/httpStatus";
 
 export async function login(employeeId, password) {
     const loginData = {
@@ -11,11 +11,12 @@ export async function login(employeeId, password) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(loginData)
+        body: JSON.stringify(loginData),
+        credentials: "include"
     });
 
     if (response.ok) {
-        return response;
+        return;
     }
 
     const error = await response.text();
@@ -25,7 +26,9 @@ export async function login(employeeId, password) {
 
 
 export async function getCurrentEmployee() {
-    const response = await fetch("/api/v1/auth/me");
+    const response = await fetch("/api/v1/auth/me", {
+        credentials: "include"
+    });
 
     if (response.ok) {
         return response.json();
@@ -40,9 +43,11 @@ export async function getCurrentEmployee() {
     throw new Error(error || "Unable to load user information.");
 }
 
+
 export async function logout() {
     const response = await fetch("/api/v1/auth/logout", {
-        method: "POST"
+        method: "POST",
+        credentials: "include"
     });
 
     if (response.ok) {
