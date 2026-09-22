@@ -12,7 +12,9 @@ import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast";
 import "../css/Register.css";
 
+
 function Register() {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
@@ -118,24 +120,23 @@ function Register() {
             joiningDate: new Date().toISOString().split("T")[0]
         };
 
+        setLoading(true);
+
         try {
             await registerEmployee(employee);
 
             setTimeout(() => {
                 navigate("/registration-pending");
             }, 10);
-
-            // setTimeout(() => {
-            //     navigate("/");
-            // }, 500);
-
         } catch (error) {
-            console.error(error);
 
+            console.error(error);
             setToast({
                 message: error.message || "Registration failed.",
                 type: "error"
             });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -147,6 +148,12 @@ function Register() {
             />
 
             <div className="register-container">
+                {loading && (
+                    <div className="loading-overlay">
+                        <div className="loading-spinner"></div>
+                        <p>Processing registration...</p>
+                    </div>
+                )}
                 <div className="register-card">
 
                     <h1>Employee Registration</h1>
@@ -290,13 +297,14 @@ function Register() {
                         )}
 
 
-                        <button type="submit">
+                        <button type="submit" disabled={loading}>
                             Register
                         </button>
 
                         <button
                             type="button"
                             onClick={() => navigate("/")}
+                            disabled={loading}
                         >
                             Go to Login
                         </button>
