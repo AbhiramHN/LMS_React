@@ -86,6 +86,31 @@ tr:hover {
     color: #7c3aed;
 }
 
+
+.no-history {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.no-history h2 {
+    margin-bottom: 10px;
+}
+
+.no-history p {
+    margin-bottom: 25px;
+    color: #666;
+}
+
+.no-history button {
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #3b18b8;
+    color: white;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .history-container {
         margin: 20px;

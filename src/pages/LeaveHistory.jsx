@@ -53,44 +53,47 @@ function LeaveHistory() {
 
                         <h1>Leave History</h1>
 
-                        <button
-                            type="button"
-                            onClick={() => navigate("/dashboard")}
-                        >
-                            Back to Dashboard
-                        </button>
-
                     </div>
 
+                    {leaves.length === 0 ? (
 
-                    <div className="table-container">
+                        <div className="no-history">
 
-                        <table>
+                            <h2>No Leave History</h2>
 
-                            <thead>
-                                <tr>
-                                    <th>Leave Type</th>
-                                    <th>From Date</th>
-                                    <th>To Date</th>
-                                    <th>Days</th>
-                                    <th>Reason</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
+                            <p>
+                                You have not applied for any leaves yet.
+                            </p>
 
-                            <tbody>
+                            <button
+                                type="button"
+                                onClick={() => navigate("/dashboard")}
+                            >
+                                Back to Dashboard
+                            </button>
 
-                                {leaves.length === 0 ? (
+                        </div>
 
+                    ) : (
+
+                        <div className="table-container">
+
+                            <table>
+
+                                <thead>
                                     <tr>
-                                        <td colSpan="6">
-                                            No leave history found.
-                                        </td>
+                                        <th>Leave Type</th>
+                                        <th>From Date</th>
+                                        <th>To Date</th>
+                                        <th>Days</th>
+                                        <th>Reason</th>
+                                        <th>Status</th>
                                     </tr>
+                                </thead>
 
-                                ) : (
+                                <tbody>
 
-                                    leaves.map((leave) => (
+                                    {leaves.map((leave) => (
 
                                         <tr key={leave.leaveId}>
 
@@ -124,15 +127,15 @@ function LeaveHistory() {
 
                                         </tr>
 
-                                    ))
+                                    ))}
 
-                                )}
+                                </tbody>
 
-                            </tbody>
+                            </table>
 
-                        </table>
+                        </div>
 
-                    </div>
+                    )}
 
                 </div>
 
