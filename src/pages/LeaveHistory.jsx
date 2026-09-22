@@ -51,7 +51,15 @@ function LeaveHistory() {
 
                     <div className="page-header">
 
-                        <h1>Leave History</h1>
+                        <h1>Leave History</h1> 
+
+                        <button
+                                type="button"
+                                onClick={() => navigate("/dashboard")}
+                            >
+                                Back to Dashboard
+                        </button>
+
 
                     </div>
 
@@ -64,13 +72,6 @@ function LeaveHistory() {
                             <p>
                                 You have not applied for any leaves yet.
                             </p>
-
-                            <button
-                                type="button"
-                                onClick={() => navigate("/dashboard")}
-                            >
-                                Back to Dashboard
-                            </button>
 
                         </div>
 

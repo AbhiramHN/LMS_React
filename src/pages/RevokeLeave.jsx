@@ -97,13 +97,25 @@ function RevokeLeave() {
                         <button
                             type="button"
                             onClick={() => navigate("/dashboard")}
-                        >
+                            >
                             Back to Dashboard
                         </button>
 
                     </div>
 
+                    {leaves.length === 0 ? (
 
+                        <div className="no-history">
+
+                            <h2>No Leaves To Revoke</h2>
+
+                            <p>
+                                YYou do not have any approved leaves available for revocation.
+                            </p>
+
+                        </div>
+
+                    ): (
                     <div className="table-container">
 
                         <table>
@@ -122,64 +134,56 @@ function RevokeLeave() {
 
                             <tbody>
 
-                                {leaves.length === 0 ? (
+                                {leaves.map((leave) => (
 
-                                    <tr>
-                                        <td colSpan="7">
-                                            No leaves available for revocation.
+                                    <tr key={leave.leaveId}>
+
+                                        <td>
+                                            {leave.employeeId}
                                         </td>
+
+                                        <td>
+                                            {leave.leaveType}
+                                        </td>
+
+                                        <td>
+                                            {leave.fromDate}
+                                        </td>
+
+                                        <td>
+                                            {leave.toDate}
+                                        </td>
+
+                                        <td>
+                                            {leave.numberOfDays}
+                                        </td>
+
+                                        <td>
+                                            {leave.reason}
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                className="revoke-button"
+                                                onClick={() => handleRevokeLeave(leave.leaveId)}
+                                            >
+                                                Revoke
+                                            </button>
+                                        </td>
+
                                     </tr>
-
-                                ) : (
-
-                                    leaves.map((leave) => (
-
-                                        <tr key={leave.leaveId}>
-
-                                            <td>
-                                                {leave.employeeId}
-                                            </td>
-
-                                            <td>
-                                                {leave.leaveType}
-                                            </td>
-
-                                            <td>
-                                                {leave.fromDate}
-                                            </td>
-
-                                            <td>
-                                                {leave.toDate}
-                                            </td>
-
-                                            <td>
-                                                {leave.numberOfDays}
-                                            </td>
-
-                                            <td>
-                                                {leave.reason}
-                                            </td>
-
-                                            <td>
-                                                <button
-                                                    className="revoke-button"
-                                                    onClick={() => handleRevokeLeave(leave.leaveId)}
-                                                >
-                                                    Revoke
-                                                </button>
-                                            </td>
-
-                                        </tr>
 
                                     ))
 
-                                )}
+                                }
 
                             </tbody>
 
                         </table>
 
                     </div>
+
+                    )}
 
                 </div>
 
