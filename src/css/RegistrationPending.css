@@ -1,0 +1,59 @@
+.registration-pending-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f7fb;
+    padding: 20px;
+}
+
+.registration-pending-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 45px 40px;
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.registration-pending-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.registration-pending-card h1 {
+    margin-bottom: 15px;
+    font-size: 28px;
+    color: #222;
+}
+
+.registration-pending-card p {
+    margin: 8px 0;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.registration-pending-button {
+    margin-top: 25px;
+    padding: 11px 24px;
+    border: none;
+    border-radius: 6px;
+    background: #1976d2;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.registration-pending-button:hover {
+    background: #1565c0;
+}
