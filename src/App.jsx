@@ -7,6 +7,8 @@ import LeaveHistory from "./pages/LeaveHistory";
 import ApproveLeave from "./pages/ApproveLeave";
 import RevokeLeave from "./pages/RevokeLeave";
 import NotFound from "./pages/NotFound";
+import VerifyEmail from "./pages/VerifyEmail";
+import RegistrationPending from "./pages/RegistrationPending";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/registration-pending" element={<RegistrationPending />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
 
                 <Route path="/dashboard" 
                     element={

@@ -3,6 +3,7 @@ import { registerEmployee } from "../services/employeeService";
 import {
     validateName,
     validateAge,
+    validateEmail,
     validateDesignation,
     validateGender,
     validatePassword
@@ -19,12 +20,14 @@ function Register() {
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
     const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
 
     const [nameError, setNameError] = useState("");
     const [ageError, setAgeError] = useState("");
     const [designationError, setDesignationError] = useState("");
     const [genderError, setGenderError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [emailError, setEmailError] = useState("");
 
     const [toast, setToast] = useState({
         message: "",
@@ -36,6 +39,13 @@ function Register() {
 
         setName(value);
         setNameError(validateName(value));
+    };
+
+    const handleEmailChange = (event) => {
+        const value = event.target.value;
+
+        setEmail(value);
+        setEmailError(validateEmail(value));
     };
 
     const handleAgeChange = (event) => {
@@ -74,12 +84,14 @@ function Register() {
         event.preventDefault();
 
         const nameValidation = validateName(name);
+        const emailValidation = validateEmail(email);
         const ageValidation = validateAge(age);
         const designationValidation = validateDesignation(designation);
         const genderValidation = validateGender(gender);
         const passwordValidation = validatePassword(password);
 
         setNameError(nameValidation);
+        setEmailError(emailValidation);
         setAgeError(ageValidation);
         setDesignationError(designationValidation);
         setGenderError(genderValidation);
@@ -87,6 +99,7 @@ function Register() {
 
         if (
             nameValidation ||
+            emailValidation ||
             ageValidation ||
             designationValidation ||
             genderValidation ||
@@ -97,6 +110,7 @@ function Register() {
 
         const employee = {
             name: name.trim(),
+            email: email.trim(),
             designation,
             age: parseInt(age, 10),
             gender,
@@ -107,20 +121,19 @@ function Register() {
         try {
             await registerEmployee(employee);
 
-            setToast({
-                message: "Registration successful!",
-                type: "success"
-            });
-
             setTimeout(() => {
-                navigate("/");
-            }, 500);
+                navigate("/registration-pending");
+            }, 10);
+
+            // setTimeout(() => {
+            //     navigate("/");
+            // }, 500);
 
         } catch (error) {
             console.error(error);
 
             setToast({
-                message: "Unable to connect to the server.",
+                message: error.message || "Registration failed.",
                 type: "error"
             });
         }
@@ -155,6 +168,22 @@ function Register() {
                         {nameError && (
                             <span className="error-message">
                                 {nameError}
+                            </span>
+                        )}
+
+                        <label htmlFor="email">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={handleEmailChange}
+                        />
+                        {emailError && (
+                            <span className="error-message">
+                                {emailError}
                             </span>
                         )}
 

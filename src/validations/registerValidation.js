@@ -30,6 +30,18 @@ export const validateAge = (value) => {
     return "";
 };
 
+export const validateEmail = (value) => {
+    if (!value.trim()) {
+        return "Email is required";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return "Enter a valid email address";
+    }
+
+    return "";
+};
+
 
 export const validateDesignation = (value) => {
     if (!value) {
