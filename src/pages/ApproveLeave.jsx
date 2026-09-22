@@ -103,7 +103,7 @@ function ApproveLeave() {
 
                     <div className="page-header">
 
-                        <h1>Pending Leave Requests</h1>
+                        <h1>Approve Leave</h1>
 
                         <button
                             type="button"
@@ -113,6 +113,20 @@ function ApproveLeave() {
                         </button>
 
                     </div>
+
+                    {leaves.length === 0 ? (
+
+                        <div className="no-history">
+
+                            <h2>No Leaves To Approve</h2>
+
+                            <p>
+                                You do not have any requested leaves available to approve.
+                            </p>
+
+                        </div>
+
+                    ): (
 
 
                     <div className="table-container">
@@ -133,17 +147,7 @@ function ApproveLeave() {
 
                             <tbody>
 
-                                {leaves.length === 0 ? (
-
-                                    <tr>
-                                        <td colSpan="7">
-                                            No pending leave requests.
-                                        </td>
-                                    </tr>
-
-                                ) : (
-
-                                    leaves.map((leave) => (
+                                {leaves.map((leave) => (
 
                                         <tr key={leave.leaveId}>
 
@@ -203,13 +207,15 @@ function ApproveLeave() {
 
                                     ))
 
-                                )}
+                                }
 
                             </tbody>
 
                         </table>
 
                     </div>
+
+                    )}
 
                 </div>
 

@@ -51,7 +51,7 @@ function LeaveHistory() {
 
                     <div className="page-header">
 
-                        <h1>Leave History</h1> 
+                        <h1>Leave History</h1>
 
                         <button
                                 type="button"
@@ -59,7 +59,6 @@ function LeaveHistory() {
                             >
                                 Back to Dashboard
                         </button>
-
 
                     </div>
 

@@ -110,7 +110,7 @@ function RevokeLeave() {
                             <h2>No Leaves To Revoke</h2>
 
                             <p>
-                                YYou do not have any approved leaves available for revocation.
+                                You do not have any approved leaves available for revocation.
                             </p>
 
                         </div>
